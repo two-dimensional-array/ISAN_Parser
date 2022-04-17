@@ -31,29 +31,57 @@ ISANRequest getRequestType(char& c)
   }
 }
 
-const std::vector<std::string> split(const std::string& s, const char& c)
+const std::vector<int> getElementPath(const std::string& s)
 {
   std::string buff{""};
-  std::vector<std::string> v;
-  for(auto n:s)
+  std::vector<int> path;
+  for(auto n : s)
   {
-    if(n != c)
+    if(n != '.')
     {
-      buff+=n;
+      buff += n;
     }
     else
     {
-		  if(n == c && buff != "")
+		  if(n == '.' && !buff.empty())
       {
-        v.push_back(buff); buff = "";
+        try
+        {
+          path.push_back(std::stoi(buff));
+          if(path.back() < 0)
+          {
+            std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR(no negative ints in elementPath allowed)" << std::endl;
+            exit(-1);
+          }
+        }
+        catch(std::exception& e)
+        {
+          std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR:" << buff << "is not an integer" << std::endl;
+          exit(-1);
+        }
+        buff.clear();
       }
     }
   }
-  if(buff != "")
+  if(!buff.empty())
   {
-    v.push_back(buff);
+    try
+    {
+      path.push_back(std::stoi(buff));
+      if(path.back() < 0)
+      {
+        std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR(no negative ints in elementPath allowed)" << std::endl;
+        exit(-1);
+      }
+    }
+    catch(std::exception& e)
+    {
+      std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR:" << buff << "is not an integer" << std::endl;
+      exit(-1);
+    }
+    buff.clear();
   }
-  return v;
+  return path;
 }
 
 int main(int argc, char ** argv)
@@ -71,31 +99,9 @@ int main(int argc, char ** argv)
   }
   // check elementPath validity
   std::string elPathString(argv[1]);
-  std::vector<std::string> tempPath;
   requestType = getRequestType(elPathString.back());
   elPathString.pop_back();
-  tempPath = split(elPathString, '.');
-  for(auto& chunk : tempPath)
-  {
-    try
-    {
-      auto num = std::stoi(chunk);
-      if(num >= 0)
-      {
-        elementPath.push_back(num);
-      }
-      else
-      {
-        std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR(no negative ints in elementPath allowed)" << std::endl;
-        exit(-1);
-      }
-    }
-    catch(std::exception& e)
-    {
-      std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR:" << chunk << "is not an integer" << std::endl;
-      exit(-1);
-    }
-  }
+  elementPath = getElementPath(elPathString);
   // let's split source string into tokens
   size_t idx = 0;
   while(idx < isanString.length())
