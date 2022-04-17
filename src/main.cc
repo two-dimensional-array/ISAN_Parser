@@ -153,17 +153,13 @@ int main(int argc, char ** argv)
     std::cerr << "ISAN SYNTAX ERROR: 0(high level object is not an array" << std::endl;
     exit(-2);
   }
-  //elementPath
-  auto element = parsedObject;
-  for(auto idx = 0; idx < elementPath.size(); idx++)
-  {
-    element = element.get(elementPath[idx], idx);
-  }
+  //choise element of elements by path
+  auto element = parsedObject.get(elementPath);
   if(true == isTypeRequested)
   {
     element.printType();
   }
-  if(true == isValueRequested)
+  else if(true == isValueRequested)
   {
     element.printValue();
   }

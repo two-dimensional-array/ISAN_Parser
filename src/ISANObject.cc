@@ -1,16 +1,21 @@
 #include "ISANObject.h"
 
-ISANObject ISANObject::get(int idx, int pathNum)
+ISANObject ISANObject::get(std::vector<int>& path)
 {
-  try
+  auto element = *this;
+  for(auto idx = 0; idx < path.size(); idx++)
   {
-    return *((this->items).at(idx));
+    try
+    {
+      element = *(element.items.at(path.at(idx)));
+    }
+    catch(std::exception e)
+    {
+      std::cerr << "ISAN PATH ERROR: " << idx << std::endl;
+      exit(-3);
+    }
   }
-  catch(std::exception e)
-  {
-    std::cerr << "ISAN PATH ERROR: " << pathNum << std::endl;
-    exit(-3);
-  }
+  return element;
 }
 
 void ISANObject::printValue()
