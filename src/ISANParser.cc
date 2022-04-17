@@ -124,3 +124,66 @@ ISANObject ParseFromTokens(std::vector<ISANToken> tokens)
   }
   return obj;
 }
+
+void TokensFromString(const std::string& source, std::vector<ISANToken>& tokens)
+{
+  size_t idx = 0;
+  while(idx < source.length())
+  {
+    if(source[idx] == '[')
+    {
+      tokens.push_back({ISANTokenType::OPEN_BRACKET, "[", idx, idx});
+      idx++;
+      continue;
+    }
+    if(source[idx] == ']')
+    {
+      tokens.push_back({ISANTokenType::CLOSE_BRACKET, "]", idx, idx});
+      idx++;
+      continue;
+    }
+    if(source[idx] == ',')
+    {
+      tokens.push_back({ISANTokenType::COMMA, ",", idx, idx});
+      idx++;
+      continue;
+    }
+    if(source[idx] == '"')
+    {
+      auto j = idx + 1;
+      for(; j < source.length() && source[j] != '"'; j++);
+      if(j == source.length())
+      {
+        std::cerr << "ISAN SYNTAX ERROR: " << idx + 1 << "(Unbalanced or unexpected quote)" << std::endl;
+        exit(-2);
+      }
+      else
+      {
+        tokens.push_back({ISANTokenType::STRING, source.substr(idx + 1, j - idx - 1), idx + 1, j-idx - 1});
+        idx = j + 1;
+        continue;
+      }
+    }
+    // seeking for integer
+    if(isdigit(source[idx]) || source[idx] == '-')
+    {
+      auto j = idx;
+      if(source[j] == '-')
+      {
+        j++;
+      }
+      for(; j < source.length() && isdigit(source[j]); j++);
+      tokens.push_back({ISANTokenType::INT, source.substr(idx, j - idx), idx, j - idx});
+      idx = j;
+      continue;
+    }
+    if(isspace(source[idx]))
+    {
+      idx++;
+      continue;
+    }
+    // for symbols not catched above
+    std::cerr << "ISAN SYNTAX ERROR: " << idx << "(unrecognized symbol: " << source[idx] << ")" << std::endl;
+    exit(-2);
+  }
+}

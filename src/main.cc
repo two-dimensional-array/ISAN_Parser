@@ -43,7 +43,7 @@ const std::vector<int> getElementPath(const std::string& s)
     }
     else
     {
-		  if(n == '.' && !buff.empty())
+      if(n == '.' && !buff.empty())
       {
         try
         {
@@ -103,65 +103,7 @@ int main(int argc, char ** argv)
   elPathString.pop_back();
   elementPath = getElementPath(elPathString);
   // let's split source string into tokens
-  size_t idx = 0;
-  while(idx < isanString.length())
-  {
-    if(isanString[idx] == '[')
-    {
-      tokens.push_back({ISANTokenType::OPEN_BRACKET, "[", idx, idx});
-      idx++;
-      continue;
-    }
-    if(isanString[idx] == ']')
-    {
-      tokens.push_back({ISANTokenType::CLOSE_BRACKET, "]", idx, idx});
-      idx++;
-      continue;
-    }
-    if(isanString[idx] == ',')
-    {
-      tokens.push_back({ISANTokenType::COMMA, ",", idx, idx});
-      idx++;
-      continue;
-    }
-    if(isanString[idx] == '"')
-    {
-      auto j = idx + 1;
-      for(; j < isanString.length() && isanString[j] != '"'; j++);
-      if(j == isanString.length())
-      {
-        std::cerr << "ISAN SYNTAX ERROR: " << idx + 1 << "(Unbalanced or unexpected quote)" << std::endl;
-        exit(-2);
-      }
-      else
-      {
-        tokens.push_back({ISANTokenType::STRING, isanString.substr(idx + 1, j - idx - 1), idx + 1, j-idx - 1});
-        idx = j + 1;
-        continue;
-      }
-    }
-    // seeking for integer
-    if(isdigit(isanString[idx]) || isanString[idx] == '-')
-    {
-      auto j = idx;
-      if(isanString[j] == '-')
-      {
-        j++;
-      }
-      for(; j < isanString.length() && isdigit(isanString[j]); j++);
-      tokens.push_back({ISANTokenType::INT, isanString.substr(idx, j - idx), idx, j - idx});
-      idx = j;
-      continue;
-    }
-    if(isspace(isanString[idx]))
-    {
-      idx++;
-      continue;
-    }
-    // for symbols not catched above
-    std::cerr << "ISAN SYNTAX ERROR: " << idx << "(unrecognized symbol: " << isanString[idx] << ")" << std::endl;
-    exit(-2);
-  }
+  TokensFromString(isanString, tokens);
   // parse from tokens
   parsedObject = ParseFromTokens(tokens);
   if(parsedObject.type != ISANObjectType::ARRAY)
@@ -169,7 +111,7 @@ int main(int argc, char ** argv)
     std::cerr << "ISAN SYNTAX ERROR: 0(high level object is not an array" << std::endl;
     exit(-2);
   }
-  //choise element of elements by path
+  // choise element of elements by path
   auto element = parsedObject.get(elementPath);
   switch (requestType)
   {

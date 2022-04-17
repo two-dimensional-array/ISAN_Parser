@@ -28,5 +28,6 @@ class ISANToken
 };
 
 ISANObject ParseFromTokens(std::vector<ISANToken> tokens);
+void TokensFromString(const std::string& source, std::vector<ISANToken>& tokens);
 
 #endif // ISAN_PARSER_H__
