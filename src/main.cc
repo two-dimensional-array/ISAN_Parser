@@ -3,6 +3,34 @@
 #include <vector>
 #include "ISANParser.h"
 
+enum class ISANRequest
+{
+  VALUE,
+  TYPE,
+  OTHER
+};
+
+ISANRequest getRequestType(char& c)
+{
+  switch (c)
+  {
+    case 't':
+    {
+      return ISANRequest::TYPE;
+    }
+    case 'v':
+    {
+      return ISANRequest::VALUE;
+    }  
+    default:
+    {
+      std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR(no type/value specifier at the end of elementPath provided)";
+      exit(-1);
+      return ISANRequest::OTHER;
+    }
+  }
+}
+
 const std::vector<std::string> split(const std::string& s, const char& c)
 {
   std::string buff{""};
@@ -32,8 +60,7 @@ int main(int argc, char ** argv)
 {    
   std::string isanString;
   std::getline(std::cin, isanString);
-  bool isTypeRequested = false;
-  bool isValueRequested = false;
+  ISANRequest requestType = ISANRequest::OTHER;
   std::vector<int> elementPath;
   std::vector<ISANToken> tokens;
   ISANObject parsedObject;
@@ -45,25 +72,8 @@ int main(int argc, char ** argv)
   // check elementPath validity
   std::string elPathString(argv[1]);
   std::vector<std::string> tempPath;
-  switch(elPathString.back())
-  {
-    case 't':
-    {
-      isTypeRequested = true;
-      break;
-    }
-    case 'v':
-    {
-      isValueRequested = true;
-      break;
-    }
-    default:
-    {
-      std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR(no type/value specifier at the end of elementPath provided)";
-      exit(-1);
-    }
-  }
-  elPathString = elPathString.substr(0, elPathString.length()-1);
+  requestType = getRequestType(elPathString.back());
+  elPathString.pop_back();
   tempPath = split(elPathString, '.');
   for(auto& chunk : tempPath)
   {
@@ -155,13 +165,16 @@ int main(int argc, char ** argv)
   }
   //choise element of elements by path
   auto element = parsedObject.get(elementPath);
-  if(true == isTypeRequested)
+  switch (requestType)
   {
-    element.printType();
-  }
-  else if(true == isValueRequested)
-  {
-    element.printValue();
+    case ISANRequest::TYPE:
+    {
+      element.printType();
+    }
+    case ISANRequest::VALUE:
+    {
+      element.printValue();
+    }
   }
   return 0;
 }
