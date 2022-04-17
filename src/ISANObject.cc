@@ -24,3 +24,25 @@ void ISANObject::printValue()
     std::cout << value << std::endl;
   }
 }
+
+void ISANObject::printType()
+{
+  switch (type)
+  {
+    case ISANObjectType::INT:
+    {
+      std::cout << "int" << std::endl;
+      break;
+    }
+    case ISANObjectType::STRING:
+    {
+      std::cout << "string" << std::endl;
+      break;
+    }
+    case ISANObjectType::ARRAY:
+    {
+      std::cout << "array" << std::endl;
+      break;
+    }
+  }
+}

@@ -21,6 +21,7 @@ class ISANObject
     std::vector<std::shared_ptr<ISANObject>> items;
     ISANObject get(int idx, int pathNum);
     void printValue();
+    void printType();
 };
 
 #endif //ISAN_OBJECT_H__

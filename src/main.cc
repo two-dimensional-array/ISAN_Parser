@@ -5,11 +5,14 @@
 
 const std::vector<std::string> split(const std::string& s, const char& c)
 {
-	std::string buff{""};
-	std::vector<std::string> v;
-	for(auto n:s)
-	{
-		if(n != c) buff+=n;
+  std::string buff{""};
+  std::vector<std::string> v;
+  for(auto n:s)
+  {
+    if(n != c)
+    {
+      buff+=n;
+    }
     else
     {
 		  if(n == c && buff != "")
@@ -17,12 +20,12 @@ const std::vector<std::string> split(const std::string& s, const char& c)
         v.push_back(buff); buff = "";
       }
     }
-	}
-	if(buff != "")
+  }
+  if(buff != "")
   {
     v.push_back(buff);
   }
-	return v;
+  return v;
 }
 
 int main(int argc, char ** argv)
@@ -36,10 +39,10 @@ int main(int argc, char ** argv)
   ISANObject parsedObject;
   if(argc != 2)
   {
-      std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR("<< argc << " arguments provided but 2 required)";
-      exit(-1);
+    std::cerr << "ISAN COMMAND LINE ARGUMENTS ERROR("<< argc << " arguments provided but 2 required)";
+    exit(-1);
   }
-  //check elementPath validity
+  // check elementPath validity
   std::string elPathString(argv[1]);
   std::vector<std::string> tempPath;
   switch(elPathString.back())
@@ -158,24 +161,7 @@ int main(int argc, char ** argv)
   }
   if(true == isTypeRequested)
   {
-    switch(element.type)
-    {
-      case ISANObjectType::ARRAY:
-      {
-        std::cout << "array" << std::endl;
-        break;
-      }
-      case ISANObjectType::INT:
-      {
-        std::cout << "int" << std::endl;
-        break;
-      }
-      case ISANObjectType::STRING:
-      {
-        std::cout << "string" << std::endl;
-        break;
-      }
-    }
+    element.printType();
   }
   if(true == isValueRequested)
   {
