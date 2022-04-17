@@ -20,6 +20,7 @@ class ISANObject
     std::string value;
     std::vector<std::shared_ptr<ISANObject>> items;
     ISANObject get(int idx, int pathNum);
+    void printValue();
 };
 
 #endif //ISAN_OBJECT_H__

@@ -12,3 +12,15 @@ ISANObject ISANObject::get(int idx, int pathNum)
     exit(-3);
   }
 }
+
+void ISANObject::printValue()
+{
+  if (type == ISANObjectType::ARRAY)
+  {
+    std::cout << "array" << std::endl;
+  }
+  else
+  {
+    std::cout << value << std::endl;
+  }
+}

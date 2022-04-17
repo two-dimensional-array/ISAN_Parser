@@ -179,14 +179,7 @@ int main(int argc, char ** argv)
   }
   if(true == isValueRequested)
   {
-    if(element.type == ISANObjectType::ARRAY)
-    {
-      std::cout << "array" << std::endl;
-    }
-    else
-    {
-      std::cout << element.value << std::endl;
-    }
+    element.printValue();
   }
   return 0;
 }
